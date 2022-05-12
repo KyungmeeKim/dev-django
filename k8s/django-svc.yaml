@@ -10,3 +10,13 @@ spec:
   - port: 8000
     targetPort: 8000
   sessionAffinity: ClientIP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: mysql-svc
+subsets:
+  - addresses:
+      - ip: 10.111.0.190
+    ports:
+      - port: 3306
