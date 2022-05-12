@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: was
-        image: kkmee0209/django:dj_v5.2
+        image: kkmee0209/django:latest
         imagePullPolicy: Always
         resources:
           limits:
