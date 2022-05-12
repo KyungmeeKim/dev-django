@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+          requests:
+            cpu: 100m            
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: "/etc/nginx/"
+          name: nginx-conf
+          readOnly: true
+        - mountPath: "/var/log/nginx/"
+          name: nfs-log
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: nginx-conf
+      - name: nfs-log
+        persistentVolumeClaim:
+          claimName: efs-claim

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dj
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: was
+  template:
+    metadata:
+      labels:
+        app: was
+    spec:
+      containers:
+      - name: was
+        image: kkmee0209/django:dj_v5.2
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            cpu: 500m          
+        ports:
+        - containerPort: 8000
+      initContainers:
+      - name: wait-for-mysql
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup mysql-0.mysql-svc.default.svc.cluster.local; do echo waiting for db-0.mysql.svc; sleep 2; done"]

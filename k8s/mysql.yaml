@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql-svc
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: kkmee0209/django:mysql_v1
+        env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:      # secret 파일 적용
+                secretKeyRef:
+                  key: rootpass
+                  name: mysql-pass
+            - name: MYSQL_DATABASE 
+              valueFrom:
+                secretKeyRef:
+                  key: dbname
+                  name: mysql-pass
+            - name: MYSQL_USER # database에 권한이 있는 user
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: mysql-pass
+            - name: MYSQL_ROOT_HOST # 접근 호스트
+              value: '%'  
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: userpass
+                  name: mysql-pass
+        ports:
+        - containerPort: 3306
+
